@@ -1,4 +1,4 @@
-# [Tracers] Colors menu
+# [Tracers] Colors Menu
 
 * Plugins uses clientprefs.
 * Only players with "a" flag or admins can use tracer color menu.
