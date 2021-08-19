@@ -6,8 +6,8 @@
 
 public Plugin myinfo =
 {
-	name = "Mermi Izleri",
-	author = "Nokta",
+	name = "Tracers Color Menu",
+	author = "epsilonr",
 	description = "",
 	version = "1.0",
 	url = "https://github.com/epsilonr"
