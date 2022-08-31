@@ -147,8 +147,14 @@ public Action Event_BulletImpact(Event event ,const char[] name, bool dB)
 		
 		
 		TE_SetupBeamPoints(m_fOrigin, m_fImpact, g_iBeam, 0, 0, 0, g_cvarTracerLife, g_cvarTracerWidth, g_cvarTracerWidth, 1, 0.0, g_FRenk, 0);
-		TE_SendToAll();
-
+		
+		int[] clients = new int[MaxClients + 1];
+		int clientCount;
+		for (new i = 1; i <= MaxClients; i++)
+			if (IsClientInGame(i) && g_Enabled[i] == true)
+				clients[clientCount++] = i;
+		
+		TE_Send(clients, MaxClients + 1);
 		return Plugin_Continue;
 	}
 	
@@ -159,12 +165,6 @@ public Action Command_Tracers(int client, int args)
 {
 	if(!IsClientInGame(client))
 		return Plugin_Handled;
-		
-	if(!IsdsfPlayerVIP(client))
-	{
-		PrintToChat(client, " \x04[Tracers]\x01 You must be \x07VIP\x01 to use this command.");
-		return Plugin_Handled;
-	}	
 	
 	AnaMenu(client);
 	return Plugin_Handled;
@@ -177,7 +177,6 @@ public Action Command_Mermi(int client, int args)
 	{
 		return Plugin_Handled;
 	}
-
 	if(g_Enabled[client] == true)
 	{
 		PrintToChat(client, " \x04[Tracers]\x01 Mermi izlerini artık görebilirsiniz.");
@@ -204,17 +203,18 @@ public Action Command_Mermi(int client, int args)
 void AnaMenu(int client)
 {
 	Menu menu = new Menu(Handler_Main);
-	menu.SetTitle("[Mermi Izleri]\n ");
-	menu.AddItem("kapat", "Reset Settings\n ");
-	menu.AddItem("kir", "Red");
-	menu.AddItem("yes", "Green");
-	menu.AddItem("pem", "Pink");
-	menu.AddItem("mor", "Purple");
-	menu.AddItem("tur", "Orange");
-	menu.AddItem("mav", "Blue");
-	menu.AddItem("bey", "White");
-	menu.AddItem("gri", "Grey");
-	menu.AddItem("gok", "Rainbow\n ");
+	menu.SetTitle("[Bullet Tracers]\n ");
+	menu.AddItem("gizle", "Hide tracers\n ");
+	menu.AddItem("kapat", "Reset Settings\n ", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("kir", "Red", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("yes", "Green", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("pem", "Pink", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("mor", "Purple", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("tur", "Orange", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("mav", "Blue", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("bey", "White", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("gri", "Grey", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
+	menu.AddItem("gok", "Rainbow\n ", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
 	menu.ExitButton = true;
 	menu.Display(client, MENU_TIME_FOREVER);
 }
@@ -245,60 +245,76 @@ public int Handler_Main(Menu menu, MenuAction action, int client, int itemNum)
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "pem"))
+			else if (StrEqual(item, "pem"))
 			{
 				g_Renk[client] = 2;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "mor"))
+			else if (StrEqual(item, "mor"))
 			{
 				g_Renk[client] = 3;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "bey"))
+			else if (StrEqual(item, "bey"))
 			{
 				g_Renk[client] = 4;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "gri"))
+			else if (StrEqual(item, "gri"))
 			{
 				g_Renk[client] = 5;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "tur"))
+			else if (StrEqual(item, "tur"))
 			{
 				g_Renk[client] = 6;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "mav"))
+			else if (StrEqual(item, "mav"))
 			{
 				g_Renk[client] = 7;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "yes"))
+			else if (StrEqual(item, "yes"))
 			{
 				g_Renk[client] = 8;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
-			if (StrEqual(item, "gok"))
+			else if (StrEqual(item, "gok"))
 			{
 				g_Renk[client] = 9;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
 			}
 			
-			if (StrEqual(item, "kapat"))
+			else if (StrEqual(item, "kapat"))
 			{
 				g_Renk[client] = -1;
 				IntToString(g_Renk[client], sCookieValue, sizeof(sCookieValue));
 				SetClientCookie(client, g_hClientCookie, sCookieValue);
+			}
+			
+			else if (StrEqual(item, "gizle"))
+			{
+				if(g_Enabled[client] == true){
+					g_Enabled[client] = false;
+					IntToString(g_Enabled[client], sCookieValue, sizeof(sCookieValue));
+					SetClientCookie(client, g_hClientCookie, sCookieValue);
+					PrintToChat(client, " \x07[Tracers] You have \x04hidden\x01 tracers.");
+				}
+				else if(g_Enabled[client] == false){
+					g_Enabled[client] = true;
+					IntToString(g_Enabled[client], sCookieValue, sizeof(sCookieValue));
+					SetClientCookie(client, g_hClientCookie, sCookieValue);
+					PrintToChat(client, " \x07[Tracers] Tracers are \x04visible\x01 now.");
+				}
 			}
 		}
 		
