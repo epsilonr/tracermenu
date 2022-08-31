@@ -204,7 +204,7 @@ void AnaMenu(int client)
 {
 	Menu menu = new Menu(Handler_Main);
 	menu.SetTitle("[Bullet Tracers]\n ");
-	menu.AddItem("gizle", "Hide tracers\n ");
+	menu.AddItem("gizle", g_Enabled[client]? "Hide Tracers\n ":"Show Tracers\n ");
 	menu.AddItem("kapat", "Reset Settings\n ", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
 	menu.AddItem("kir", "Red", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
 	menu.AddItem("yes", "Green", IsdsfPlayerVIP(client)? ITEMDRAW_DEFAULT:ITEMDRAW_DISABLED);
